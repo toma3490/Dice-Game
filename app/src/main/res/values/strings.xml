@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Dice Game</string>
     <string name="action_settings">Settings</string>
+    <string name="dice_1_image_description">Dice 1 image</string>
+    <string name="dice_2_image_description">Dice 2 image</string>
+    <string name="dice_3_image_description">Dice 3 image</string>
+    <string name="msg_to_user">Let\'s play!</string>
+    <string name="score">Score: 0</string>
 </resources>
