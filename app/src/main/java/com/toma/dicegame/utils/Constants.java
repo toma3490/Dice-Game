@@ -7,4 +7,5 @@ package com.toma.dicegame.utils;
 public class Constants {
 
     public static final int MAX_DICE_VALUE = 6;
+    public static final int DICE_QUANTITY = 3;
 }

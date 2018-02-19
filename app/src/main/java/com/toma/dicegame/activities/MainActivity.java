@@ -2,6 +2,7 @@ package com.toma.dicegame.activities;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.toma.dicegame.utils.Constants.DICE_QUANTITY;
 import static com.toma.dicegame.utils.Constants.MAX_DICE_VALUE;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<ImageView> diceImages;
     private int dice1, dice2, dice3;
     private int score;
+    private String message;
     private List<Integer> dice;
     private Random random;
 
@@ -89,35 +92,61 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener rollDice = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            dice1 = throwDice();
-            dice2 = throwDice();
-            dice3 = throwDice();
 
+            throwDices();
             dice.clear();
-            dice.add(dice1);
-            dice.add(dice2);
-            dice.add(dice3);
+            addDicesToList();
+            setImageToDiceValue();
 
-            for (int dieOfSet = 0; dieOfSet < 3; dieOfSet++) {
-                String imageName = "die" + dice.get(dieOfSet) + ".png";
-
-                try {
-                    InputStream stream = getAssets().open(imageName);
-                    Drawable drawable = Drawable.createFromStream(stream,null);
-                    diceImages.get(dieOfSet).setImageDrawable(drawable);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            if (dice1 == dice2 && dice1 == dice3){
+                int scoreDelta = dice1 * 100;
+                message = "You rolled a triple " + dice1 + "! You scored " + scoreDelta + " points!";
+                score += scoreDelta;
+            } else if (dice1 == dice2 || dice1 == dice3 || dice2 == dice3){
+                message = "You rollled doubles for 50 points!";
+                score += 50;
+            } else {
+                message = "You didn't score this roll. Try again!";
             }
 
-            String msg = "You rolled a " + dice1 + " and " + dice2 + " and " + dice3;
-            rollResult.setText(msg);
-
+            rollResult.setText(message);
+            totalScore.setText("Score: " + score);
 
         }
     };
 
+    private void throwDices() {
+        dice1 = throwDice();
+        dice2 = throwDice();
+        dice3 = throwDice();
+    }
+
     private int throwDice (){
         return random.nextInt(MAX_DICE_VALUE) + 1;
+    }
+
+    private void addDicesToList() {
+        dice.add(dice1);
+        dice.add(dice2);
+        dice.add(dice3);
+    }
+
+    @NonNull
+    private String getNameOfDiceImage(int dieInSet) {
+        return "die" + dice.get(dieInSet) + ".png";
+    }
+
+    private void setImageToDiceValue() {
+        for (int dieInSet = 0; dieInSet < DICE_QUANTITY; dieInSet++) {
+            String imageName = getNameOfDiceImage(dieInSet);
+
+            try {
+                InputStream stream = getAssets().open(imageName);
+                Drawable drawable = Drawable.createFromStream(stream,null);
+                diceImages.get(dieInSet).setImageDrawable(drawable);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
