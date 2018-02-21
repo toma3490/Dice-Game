@@ -100,13 +100,13 @@ public class MainActivity extends AppCompatActivity {
 
             if (dice1 == dice2 && dice1 == dice3){
                 int scoreDelta = dice1 * 100;
-                message = "You rolled a triple " + dice1 + "! You scored " + scoreDelta + " points!";
+                message = getString(R.string.triple_roll_msg_to_user, dice1, scoreDelta);
                 score += scoreDelta;
             } else if (dice1 == dice2 || dice1 == dice3 || dice2 == dice3){
-                message = "You rollled doubles for 50 points!";
+                message = getString(R.string.double_roll_msg_to_user);
                 score += 50;
             } else {
-                message = "You didn't score this roll. Try again!";
+                message = getString(R.string.fail_roll_msg_to_user);
             }
 
             rollResult.setText(message);

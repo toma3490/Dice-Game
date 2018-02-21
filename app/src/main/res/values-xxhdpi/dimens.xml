@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="result_tv_size">21sp</dimen>
+    <dimen name="score_tv_marginTop">50dp</dimen>
+    <dimen name="score_tv_size">34sp</dimen>
+</resources>

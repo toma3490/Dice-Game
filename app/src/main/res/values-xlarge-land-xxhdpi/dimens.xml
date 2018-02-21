@@ -1,0 +1,9 @@
+<resources>
+    <dimen name="result_tv_size">32sp</dimen>
+    <dimen name="result_tv_marginTop">32dp</dimen>
+    <dimen name="result_tv_marginBottom">32dp</dimen>
+    <dimen name="dice_iv_size">200dp</dimen>
+    <dimen name="dice_iv_marginTop">150dp</dimen>
+    <dimen name="score_tv_marginTop">32dp</dimen>
+    <dimen name="score_tv_size">42sp</dimen>
+</resources>

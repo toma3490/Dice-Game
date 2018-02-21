@@ -4,6 +4,9 @@
     <string name="dice_1_image_description">Dice 1 image</string>
     <string name="dice_2_image_description">Dice 2 image</string>
     <string name="dice_3_image_description">Dice 3 image</string>
-    <string name="msg_to_user">Let\'s play!</string>
+    <string name="welcome_msg_to_user">Let\'s play!</string>
     <string name="score">Score: 0</string>
+    <string name="triple_roll_msg_to_user">You rolled a triple %1$d! You scored %2$d points!</string>
+    <string name="double_roll_msg_to_user">You rolled doubles for 50 points!</string>
+    <string name="fail_roll_msg_to_user">You didn\'t score this roll. Try again!</string>
 </resources>
