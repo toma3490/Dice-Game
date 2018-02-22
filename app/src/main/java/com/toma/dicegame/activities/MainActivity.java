@@ -1,6 +1,9 @@
 package com.toma.dicegame.activities;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.toma.dicegame.R;
+import com.toma.dicegame.hardware.ShakeDetector;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +28,10 @@ import static com.toma.dicegame.utils.Constants.DICE_QUANTITY;
 import static com.toma.dicegame.utils.Constants.MAX_DICE_VALUE;
 
 public class MainActivity extends AppCompatActivity {
+
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private ShakeDetector shakeDetector;
 
     private TextView rollResult;
     private TextView totalScore;
@@ -45,7 +53,22 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(rollDice);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rollEvent();
+            }
+        });
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        shakeDetector = new ShakeDetector();
+        shakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+            @Override
+            public void onShake(int count) {
+                rollEvent();
+            }
+        });
 
         rollResult = findViewById(R.id.result_tv);
         totalScore = findViewById(R.id.score_tv);
@@ -65,6 +88,18 @@ public class MainActivity extends AppCompatActivity {
         score = 0;
 
         random = new Random();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_UI);
+    }
+
+    @Override
+    protected void onPause() {
+        sensorManager.unregisterListener(shakeDetector);
+        super.onPause();
     }
 
     @Override
@@ -89,39 +124,35 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    View.OnClickListener rollDice = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+    private void rollEvent() {
+        rollDices();
+        dice.clear();
+        addDicesToList();
+        setImageToDiceValue();
 
-            throwDices();
-            dice.clear();
-            addDicesToList();
-            setImageToDiceValue();
-
-            if (dice1 == dice2 && dice1 == dice3){
-                int scoreDelta = dice1 * 100;
-                message = getString(R.string.triple_roll_msg_to_user, dice1, scoreDelta);
-                score += scoreDelta;
-            } else if (dice1 == dice2 || dice1 == dice3 || dice2 == dice3){
-                message = getString(R.string.double_roll_msg_to_user);
-                score += 50;
-            } else {
-                message = getString(R.string.fail_roll_msg_to_user);
-            }
-
-            rollResult.setText(message);
-            totalScore.setText("Score: " + score);
-
+        if (dice1 == dice2 && dice1 == dice3){
+            int scoreDelta = dice1 * 100;
+            message = getString(R.string.triple_roll_msg_to_user, dice1, scoreDelta);
+            score += scoreDelta;
+        } else if (dice1 == dice2 || dice1 == dice3 || dice2 == dice3){
+            message = getString(R.string.double_roll_msg_to_user);
+            score += 50;
+        } else {
+            message = getString(R.string.fail_roll_msg_to_user);
         }
-    };
 
-    private void throwDices() {
-        dice1 = throwDice();
-        dice2 = throwDice();
-        dice3 = throwDice();
+        rollResult.setText(message);
+        totalScore.setText("Score: " + score);
     }
 
-    private int throwDice (){
+
+    private void rollDices() {
+        dice1 = rollDice();
+        dice2 = rollDice();
+        dice3 = rollDice();
+    }
+
+    private int rollDice(){
         return random.nextInt(MAX_DICE_VALUE) + 1;
     }
 
